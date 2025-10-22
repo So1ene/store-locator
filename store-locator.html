@@ -1,0 +1,1217 @@
+<section class="container">
+
+  <div class="store-locator">
+    <div class="store-locator-wrapper">
+      <div class="store-locator-sidebar">
+        <form class="store-locator-search-form">
+          <div class="store-locator-input">
+            <input type="text" required="true" placeholder="Enter your location" class="pac-target-input"
+              autocomplete="off">
+          </div>
+          <button type="submit" class="find-a-store-btn">Find a Location</button>
+        </form>
+        <div class="no-store-message" style="display:none;">Sorry, there are no locations found near you.</div>
+        <div class="store-locator-store-list">
+        </div>
+      </div>
+      <div id="map"></div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+  (function () {
+    const mapConfig = {
+      // Initial coorodinates of the map view:
+      center: { lat: 39.8283, lng: -98.5795 },
+      // Initial zoom: the lower the number, the more zoomed out
+      zoom: 4,
+      // Map theme, options are: standard, silver, retro, dark, night, aubergine
+      theme: 'silver',
+      // Color for pin icons
+      pinColor: '#F37021'
+    };
+
+    const storeData = [
+      {
+        "title": "Tarzana CA",
+        "extra": "844-436-8362",
+        "address": "5525 Etiwanda Avenue, Suite 211<br>Tarzana, CA 91356",
+        "cta": {
+          "text": "Book Now",
+          "url": "https://app.nexhealth.com/appt/ent-urgent-care?lid=315590"
+        },
+        "hours": {
+          "monday": "7:30 am - 6:30 pm",
+          "tuesday": "7:30 am - 6:30 pm",
+          "wednesday": "7:30 am - 6:30 pm",
+          "thursday": "7:30 am - 6:30 pm",
+          "friday": "7:30 am - 6:30 pm",
+          "saturday": "Closed",
+          "sunday": "Closed"
+        }
+      },
+      {
+        "title": "Colorado Springs CO",
+        "extra": "719-301-3800",
+        "address": "2060 Briargate Pkwy #120<br>Colorado Springs, CO 80920",
+        "cta": {
+          "text": "Book Now",
+          "url": "https://app.nexhealth.com/appt/ent-urgent-care?lid=328157"
+        },
+        "hours": {
+          "monday": "8:00 am - 5:00 pm",
+          "tuesday": "8:00 am - 5:00 pm",
+          "wednesday": "8:00 am - 5:00 pm",
+          "thursday": "8:00 am - 5:00 pm",
+          "friday": "7:30 am - 1:00 pm",
+          "saturday": "Closed",
+          "sunday": "Closed"
+        }
+      },
+      {
+        "title": "Lewes DE",
+        "extra": "302-703-4025",
+        "address": "17005 Old Orchard Rd<br>Lewes, DE 19958",
+        "cta": {
+          "text": "Book Now",
+          "url": "https://app.nexhealth.com/appts/ent-urgent-care"
+        },
+        "hours": {
+          "monday": "8:00 am - 4:30 pm",
+          "tuesday": "8:00 am - 4:30 pm",
+          "wednesday": "8:00 am - 4:30 pm",
+          "thursday": "8:00 am - 4:30 pm",
+          "friday": "8:00 am - 12:00 pm",
+          "saturday": "Closed",
+          "sunday": "Closed"
+        }
+      },
+      {
+        "title": "Mankato MN",
+        "extra": "952-395-2500",
+        "address": "1057 Madison Avenue<br>Mankato, MN 56001",
+        "cta": {
+          "text": "Book Now",
+          "url": "https://app.nexhealth.com/appts/ent-urgent-care"
+        }
+      },
+      {
+        "title": "Savage MN",
+        "extra": "952-395-2500",
+        "address": "14020 State Highway 13<br>Savage, MN 55378",
+        "cta": {
+          "text": "Book Now",
+          "url": "https://app.nexhealth.com/appts/ent-urgent-care"
+        }
+      },
+      {
+        "title": "Corinth MS",
+        "extra": "662-666-3681",
+        "address": "2907 Hwy 72 West<br>Corinth, MS 38834",
+        "cta": {
+          "text": "Book Now",
+          "url": "https://app.nexhealth.com/appts/ent-urgent-care"
+        },
+        "hours": {
+          "monday": "8:00 am - 5:00 pm",
+          "tuesday": "Closed",
+          "wednesday": "Closed",
+          "thursday": "8:00 am - 5:00 pm",
+          "friday": "7:30 am - 1:00 pm",
+          "saturday": "Closed",
+          "sunday": "Closed"
+        }
+      },
+      {
+        "title": "New Albany MS",
+        "extra": "662-666-3681",
+        "address": "ENT Urgent Care<br>228 Starlyn Avenue<br>New Albany, MS 38652",
+        "cta": {
+          "text": "Book Now",
+          "url": "https://app.nexhealth.com/appts/ent-urgent-care"
+        },
+        "hours": {
+          "monday": "8:00 am - 5:00 pm",
+          "tuesday": "8:00 am - 5:00 pm",
+          "wednesday": "8:00 am - 5:00 pm",
+          "thursday": "8:00 am - 5:00 pm",
+          "friday": "7:30 am - 1:00 pm",
+          "saturday": "Closed",
+          "sunday": "Closed"
+        }
+      },
+      {
+        "title": "Starkville MS",
+        "extra": "662-666-3681",
+        "address": "300 Hospital Rd<br>Starkville, MS 39759",
+        "cta": {
+          "text": "Book Now",
+          "url": "https://app.nexhealth.com/appts/ent-urgent-care"
+        },
+        "hours": {
+          "monday": "8:00 am - 5:00 pm",
+          "tuesday": "8:00 am - 5:00 pm",
+          "wednesday": "8:00 am - 5:00 pm",
+          "thursday": "1:00 pm - 5:00 pm",
+          "friday": "Closed",
+          "saturday": "Closed",
+          "sunday": "Closed"
+        }
+      },
+      {
+        "title": "Tupelo Crosstown MS",
+        "extra": "662-666-3681",
+        "address": "323 N. Gloster St.<br>Tupelo, MS 38804",
+        "cta": {
+          "text": "Book Now",
+          "url": "https://app.nexhealth.com/appts/ent-urgent-care"
+        },
+        "hours": {
+          "monday": "8:00 am - 5:00 pm",
+          "tuesday": "8:00 am - 5:00 pm",
+          "wednesday": "8:00 am - 5:00 pm",
+          "thursday": "8:00 am - 5:00 pm",
+          "friday": "7:30 am - 1:00 pm",
+          "saturday": "Closed",
+          "sunday": "Closed"
+        }
+      },
+      {
+        "title": "Tupelo Main MS",
+        "extra": "662-666-3681",
+        "address": "618 Pegram Drive<br>Tupelo, MS 38801",
+        "cta": {
+          "text": "Book Now",
+          "url": "https://app.nexhealth.com/appts/ent-urgent-care"
+        },
+        "hours": {
+          "monday": "8:00 am - 5:00 pm",
+          "tuesday": "8:00 am - 5:00 pm",
+          "wednesday": "8:00 am - 5:00 pm",
+          "thursday": "8:00 am - 5:00 pm",
+          "friday": "7:30 am - 1:00 pm",
+          "saturday": "Closed",
+          "sunday": "Closed"
+        }
+      },
+      {
+        "title": "Charlotte NC",
+        "extra": "704-703-1080",
+        "address": "8924 Blakeney Professional Dr.<br>Charlotte, NC 28277",
+        "cta": {
+          "text": "Book Now",
+          "url": "https://app.nexhealth.com/appts/ent-urgent-care"
+        },
+        "hours": {
+          "monday": "8:00 am - 5:00 pm",
+          "tuesday": "8:00 am - 5:00 pm",
+          "wednesday": "8:00 am - 5:00 pm",
+          "thursday": "8:00 am - 5:00 pm",
+          "friday": "8:00 am - 5:00 pm",
+          "saturday": "Closed",
+          "sunday": "Closed"
+        }
+      },
+      {
+        "title": "Monroe NC",
+        "extra": "704-703-1080",
+        "address": "1994 Wellness Blvd, Suite 210<br>Monroe, NC 28110",
+        "cta": {
+          "text": "Book Now",
+          "url": "https://app.nexhealth.com/appts/ent-urgent-care"
+        },
+        "hours": {
+          "monday": "8:00 am - 5:00 pm",
+          "tuesday": "8:00 am - 5:00 pm",
+          "wednesday": "8:00 am - 5:00 pm",
+          "thursday": "8:00 am - 5:00 pm",
+          "friday": "8:00 am - 5:00 pm",
+          "saturday": "Closed",
+          "sunday": "Closed"
+        }
+      },
+      {
+        "title": "Austin TX",
+        "extra": "512-596-1420",
+        "address": "12309 N Mopac Expy STE 100<br>Austin, TX 78758",
+        "cta": {
+          "text": "Book Now",
+          "url": "https://app.nexhealth.com/appt/ent-urgent-care?lid=315868"
+        },
+        "hours": {
+          "monday": "8:00 am - 5:00 pm",
+          "tuesday": "8:00 am - 5:00 pm",
+          "wednesday": "8:00 am - 5:00 pm",
+          "thursday": "8:00 am - 5:00 pm",
+          "friday": "8:00 am - 4:00 pm",
+          "saturday": "Closed",
+          "sunday": "Closed"
+        }
+      },
+      {
+        "title": "Lakeway TX",
+        "extra": "512-605-1564",
+        "address": "4 Lakeway Centre Ct. Unit B<br>Lakeway, TX 78734",
+        "cta": {
+          "text": "Book Now",
+          "url": "https://app.nexhealth.com/appts/ent-urgent-care"
+        },
+        "hours": {
+          "monday": "8:00 am - 5:00 pm",
+          "tuesday": "8:00 am - 5:00 pm",
+          "wednesday": "8:00 am - 5:00 pm",
+          "thursday": "8:00 am - 5:00 pm",
+          "friday": "8:00 am - 4:00 pm",
+          "saturday": "Closed",
+          "sunday": "Closed"
+        }
+      }
+    ];
+
+    const texts = {
+      days: {
+        sunday: "Sunday",
+        monday: "Monday",
+        tuesday: "Tuesday",
+        wednesday: "Wednesday",
+        thursday: "Thursday",
+        friday: "Friday",
+        saturday: "Saturday"
+      },
+      closed: "Closed",
+      todaysHours: "Today's hours",
+      expandToSeeWeekly: "Expand to see weekly hours",
+      getDirections: "Get directions"
+    };
+
+    if (window.storeLocatorActive) {
+      const currentSection = document.querySelector('.store-locator');
+      if (currentSection) {
+        const storeList = currentSection.querySelector('.store-locator-store-list');
+        if (storeList) {
+          storeList.innerHTML = '';
+        }
+      }
+      return;
+    }
+    window.storeLocatorActive = true;
+    var scriptId = 'google-maps-api';
+    if (!document.getElementById(scriptId)) {
+      var s = document.createElement('script');
+      s.id = scriptId;
+      s.src = "https://maps.googleapis.com/maps/api/js?key=YOUR-API-KEY&libraries=places&language=en";
+      s.async = true;
+      s.onload = onGoogleMapsReady;
+      document.head.appendChild(s);
+    } else if (window.google && window.google.maps) {
+      onGoogleMapsReady();
+    } else {
+      document.getElementById(scriptId).addEventListener('load', onGoogleMapsReady);
+    }
+
+    function onGoogleMapsReady() {
+      if (window._mapsInitialized) return;
+      window._mapsInitialized = true;
+
+      stores = createStoresFromData();
+      renderStoreList();
+
+      geocodeAllStores(stores, function () {
+        stores = stores.filter(store => typeof store.lat === 'number' && typeof store.lng === 'number' && !isNaN(store.lat) && !isNaN(store.lng));
+        if (stores.length === 0) {
+          return;
+        }
+        renderStoreList();
+        initMap();
+      });
+
+      function initAutocompleteWhenReady() {
+        if (window.google && google.maps && google.maps.places && typeof google.maps.places.Autocomplete === "function") {
+          const input = document.querySelector('.store-locator-search-form input[type="text"]');
+          if (input && !input._autocompleteAttached) {
+            const autocomplete = new google.maps.places.Autocomplete(input, { types: ['geocode'] });
+            autocomplete.addListener('place_changed', function (e) {
+              const submitEvent = new CustomEvent('submit', { cancelable: true });
+              document.querySelector('.store-locator-search-form').dispatchEvent(submitEvent);
+            });
+            input._autocompleteAttached = true;
+          }
+        } else {
+          setTimeout(initAutocompleteWhenReady, 200);
+        }
+      }
+      initAutocompleteWhenReady();
+
+      document.querySelector('.store-locator-search-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const address = document.querySelector('.store-locator-search-form input[type="text"]').value.trim();
+        if (!address) {
+          showAllStores();
+          hideNoStoreMessage();
+          return;
+        }
+
+        geocodeAddress(address, (loc) => {
+          if (!loc) {
+            showNoStoreMessage();
+            showAllStores();
+            return;
+          }
+
+          const searchLat = loc.lat();
+          const searchLng = loc.lng();
+
+          const storesWithDistance = stores.map((store, idx) => ({
+            idx,
+            distance: distance(searchLat, searchLng, store.lat, store.lng)
+          }))
+            .sort((a, b) => a.distance - b.distance);
+
+          const nearestStore = storesWithDistance.find(item => item.distance <= 800);
+
+          const nearbyStores = storesWithDistance
+            .filter(item => item.distance <= 200)
+            .map(item => item.idx);
+
+          if (!nearestStore && nearbyStores.length === 0) {
+            showNoStoreMessage();
+            showAllStores();
+          } else {
+            hideNoStoreMessage();
+
+            if (nearestStore) {
+              const combinedStores = [nearestStore.idx];
+              nearbyStores.forEach(idx => {
+                if (idx !== nearestStore.idx) {
+                  combinedStores.push(idx);
+                }
+              });
+
+              showOnlyNearbyStores(combinedStores);
+              rearrangeStoreElements(combinedStores);
+              panToStore(nearestStore.idx);
+              scrollMapIntoView();
+            } else {
+              showOnlyNearbyStores(nearbyStores);
+              rearrangeStoreElements(nearbyStores);
+              panToStore(nearbyStores[0]);
+              scrollMapIntoView();
+            }
+          }
+        });
+      });
+
+      const searchInput = document.querySelector('.store-locator-search-form input[type="text"]');
+      searchInput.addEventListener('input', function () {
+        showAllStores();
+        hideNoStoreMessage();
+      });
+    }
+
+    function rearrangeStoreElements(storeIndices) {
+      const storeList = document.querySelector('.store-locator-store-list');
+      const storeElements = storeIndices.map(idx => stores[idx].el);
+
+      storeElements.forEach(el => {
+        storeList.appendChild(el);
+      });
+    }
+
+    function findStoresWithinRadius(lat, lng, radiusKm) {
+      return stores.map((store, idx) => ({
+        idx,
+        distance: distance(lat, lng, store.lat, store.lng)
+      }))
+        .filter(item => item.distance <= radiusKm)
+        .sort((a, b) => a.distance - b.distance)
+        .map(item => item.idx);
+    }
+
+    function showOnlyNearbyStores(storeIndices) {
+      stores.forEach((store, i) => {
+        store.el.style.display = storeIndices.includes(i) ? '' : 'none';
+      });
+    }
+
+    function getTodayKey() {
+      const days = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
+      return days[new Date().getDay()];
+    }
+
+    function createStoresFromData() {
+      const storeList = document.querySelector('.store-locator-store-list');
+
+      return storeData.map((storeInfo, index) => {
+        const storeElement = document.createElement('div');
+        storeElement.className = 'store-item';
+        storeElement.setAttribute('tabindex', '0');
+        storeElement.setAttribute('role', 'button');
+        storeElement.setAttribute('aria-label', `View details for ${storeInfo.title} location`);
+
+        if (storeInfo.hours) {
+          Object.entries(storeInfo.hours).forEach(([day, hours]) => {
+            storeElement.setAttribute(`data-${day}`, hours);
+          });
+        }
+
+        const hasHours = storeInfo.hours && Object.keys(storeInfo.hours).length > 0;
+
+        storeElement.innerHTML = `
+                  <div class="store-title">${storeInfo.title}</div>
+                  <div class="store-extra">
+                      <p>${storeInfo.extra}</p>
+                  </div>
+                  <div class="store-address">
+                      <p>${storeInfo.address}</p>
+                  </div>
+                  ${hasHours ? `
+                  <button type="button" class="work-time-today" aria-expanded="false" id="work-time-toggle-${index}"
+                      aria-controls="work-time-week-${index}">
+                      <span class="work-time-today-label">${texts.todaysHours}:</span>
+                      <span class="work-time-today-hours"></span>
+                      <span class="expand-arrow" aria-hidden="true">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="17" height="16" viewBox="0 0 21 20" fill="none">
+                              <path fill-rule="evenodd" clip-rule="evenodd" d="M6.14014 8.17781L6.84724 7.4707L10.4937 11.1171L14.1401 7.4707L14.8472 8.17781L10.4937 12.5314L6.14014 8.17781Z" fill="black"/>
+                          </svg>
+                      </span>
+                  </button>
+                  <div class="work-time-week" role="region" id="work-time-week-${index}">
+                      <ul class="hours-list" aria-label="Weekly hours"></ul>
+                  </div>
+                  ` : ''}
+              `;
+
+        storeList.appendChild(storeElement);
+
+        const addressDiv = storeElement.querySelector('.store-address');
+        return {
+          id: index,
+          el: storeElement,
+          title: storeInfo.title,
+          address: addressDiv.textContent.trim(),
+          addressHTML: addressDiv.innerHTML,
+          lat: null,
+          lng: null,
+          workTimes: storeInfo.hours || {}
+        };
+      });
+    }
+
+    function getStoresFromDOM() {
+      const items = Array.from(document.querySelectorAll('.store-item'));
+      return items.map(item => {
+        const title = item.querySelector('.store-title')?.textContent?.trim() || '';
+        let address = '';
+        const addressDiv = item.querySelector('.store-address');
+        if (addressDiv) {
+          address = addressDiv.textContent.trim();
+        }
+        return {
+          el: item,
+          title,
+          address,
+          addressHTML: addressDiv?.innerHTML || '',
+          lat: null,
+          lng: null,
+          workTimes: {
+            monday: item.dataset.monday,
+            tuesday: item.dataset.tuesday,
+            wednesday: item.dataset.wednesday,
+            thursday: item.dataset.thursday,
+            friday: item.dataset.friday,
+            saturday: item.dataset.saturday,
+            sunday: item.dataset.sunday
+          }
+        };
+      });
+    }
+
+    let map;
+    let stores = [];
+    const markers = [];
+    const infoWindows = [];
+
+    function renderStoreList() {
+      const todayKey = getTodayKey();
+      stores.forEach((store, idx) => {
+        const todaysHoursButton = store.el.querySelector('.work-time-today');
+
+        if (todaysHoursButton) {
+          const workTimeHours = store.el.querySelector('.work-time-today-hours');
+          const workTimeWeekDiv = store.el.querySelector('.work-time-week');
+          const hoursList = store.el.querySelector('.hours-list');
+
+          todaysHoursButton.id = `work-time-toggle-${idx}`;
+          workTimeWeekDiv.id = `work-time-week-${idx}`;
+          todaysHoursButton.setAttribute('aria-controls', workTimeWeekDiv.id);
+
+          const todayHours = store.workTimes[todayKey] || texts.closed;
+          workTimeHours.textContent = todayHours;
+          const todaysHoursLabel = todaysHoursButton.querySelector('.work-time-today-label').textContent;
+          todaysHoursButton.setAttribute('aria-label', `${todaysHoursLabel} ${todayHours}. ${texts.expandToSeeWeekly}`);
+          hoursList.innerHTML = '';
+          Object.entries(store.workTimes).forEach(([day, hours]) => {
+            const item = document.createElement('li');
+            item.innerHTML = `<span class="day-name">${capitalize(texts.days[day])}:</span> <span class="day-hours">${hours || texts.closed}</span>`;
+            hoursList.appendChild(item);
+          });
+
+          if (!todaysHoursButton._hasClickHandler) {
+            todaysHoursButton.addEventListener('click', (e) => {
+              e.stopPropagation();
+              const isExpanded = todaysHoursButton.getAttribute('aria-expanded') === 'true';
+              const newExpandedState = !isExpanded;
+              todaysHoursButton.setAttribute('aria-expanded', newExpandedState ? 'true' : 'false');
+              const storeItem = todaysHoursButton.closest('.store-item');
+              storeItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            });
+            todaysHoursButton._hasClickHandler = true;
+          }
+        }
+
+        store.el.onclick = function (e) {
+          if (!e.target.closest('.work-time-today')) {
+            panToStore(idx);
+            scrollMapIntoView();
+            this.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }
+        };
+
+        store.el.onkeydown = function (e) {
+          if (e.key === 'Enter' && !e.target.closest('.work-time-today')) {
+            panToStore(idx);
+            scrollMapIntoView();
+            this.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }
+        };
+      });
+    }
+
+    function showAllStores() {
+      stores.forEach(store => {
+        store.el.style.display = '';
+      });
+    }
+
+    function showOnlyStore(idx) {
+      stores.forEach((store, i) => {
+        store.el.style.display = i === idx ? '' : 'none';
+      });
+    }
+
+    function capitalize(str) {
+      return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
+    function isElementPartiallyInViewport(el, threshold = 0.2) {
+      const rect = el.getBoundingClientRect();
+      const windowHeight = (window.innerHeight || document.documentElement.clientHeight);
+      const windowWidth = (window.innerWidth || document.documentElement.clientWidth);
+      const visibleHeight = Math.max(0, Math.min(rect.bottom, windowHeight) - Math.max(rect.top, 0));
+      const visibleWidth = Math.max(0, Math.min(rect.right, windowWidth) - Math.max(rect.left, 0));
+      const area = rect.width * rect.height;
+      const visibleArea = visibleWidth * visibleHeight;
+      return area > 0 && (visibleArea / area) >= threshold;
+    }
+
+    function scrollMapIntoView() {
+      const mapEl = document.getElementById('map');
+      if (mapEl && !isElementPartiallyInViewport(mapEl, 0.2)) {
+        mapEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+
+    function panToStore(idx) {
+      const store = stores[idx];
+      if (markers[idx]) {
+        map.panTo({ lat: store.lat, lng: store.lng });
+        map.setZoom(12);
+        google.maps.event.trigger(markers[idx], 'click');
+      }
+    }
+
+    function getMapStyles() {
+      return MAP_THEMES[mapConfig.theme] || MAP_THEMES.standard;
+    }
+
+    function getGeolocationSVGDataURL() {
+      // Get the geometry color from the current theme
+      const currentTheme = MAP_THEMES[mapConfig.theme] || MAP_THEMES.standard;
+      let geometryColor = '#f5f5f5'; // Default fallback
+
+      // Find the geometry color in the theme styles
+      const geometryStyle = currentTheme.find(style =>
+        style.elementType === 'geometry' &&
+        style.stylers &&
+        style.stylers.find(styler => styler.color)
+      );
+
+      if (geometryStyle) {
+        const colorStyler = geometryStyle.stylers.find(styler => styler.color);
+        if (colorStyler) {
+          geometryColor = colorStyler.color;
+        }
+      }
+
+      const svg = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 11.5C11.337 11.5 10.7011 11.2366 10.2322 10.7678C9.76339 10.2989 9.5 9.66304 9.5 9C9.5 8.33696 9.76339 7.70107 10.2322 7.23223C10.7011 6.76339 11.337 6.5 12 6.5C12.663 6.5 13.2989 6.76339 13.7678 7.23223C14.2366 7.70107 14.5 8.33696 14.5 9C14.5 9.3283 14.4353 9.65339 14.3097 9.95671C14.1841 10.26 13.9999 10.5356 13.7678 10.7678C13.5356 10.9999 13.26 11.1841 12.9567 11.3097C12.6534 11.4353 12.3283 11.5 12 11.5ZM12 2C10.1435 2 8.36301 2.7375 7.05025 4.05025C5.7375 5.36301 5 7.14348 5 9C5 14.25 12 22 12 22C12 22 19 14.25 19 9C19 7.14348 18.2625 5.36301 16.9497 4.05025C15.637 2.7375 13.8565 2 12 2Z" fill="${mapConfig.pinColor}"/>
+      <circle cx="12" cy="9" r="2" fill="${geometryColor}"/>
+      </svg>`;
+      return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+    }
+
+    function initMap() {
+      if (stores.length === 0) return;
+      markers.length = 0;
+      infoWindows.length = 0;
+
+      map = new google.maps.Map(document.getElementById('map'), {
+        center: mapConfig.center,
+        zoom: mapConfig.zoom,
+        styles: getMapStyles(),
+        maxZoom: 18,
+        minZoom: 2,
+        mapTypeId: 'roadmap',
+        gestureHandling: "auto",
+        scrollwheel: true,
+        zoomControl: true,
+        streetViewControl: false,
+        mapTypeControl: false,
+        controlSize: 32
+      });
+
+      const iconUrl = getGeolocationSVGDataURL();
+
+      stores.forEach((store, idx) => {
+        if (isNaN(store.lat) || isNaN(store.lng)) {
+          return;
+        }
+
+        const marker = new google.maps.Marker({
+          position: { lat: store.lat, lng: store.lng },
+          map,
+          title: store.title,
+          icon: {
+            url: iconUrl,
+            scaledSize: new google.maps.Size(32, 32),
+            anchor: new google.maps.Point(16, 32)
+          }
+        });
+        markers[idx] = marker;
+
+        const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(store.address)}`;
+
+        const formattedAddress = (store.addressHTML || store.address).replace(/<br\s*\/?>/gi, ' ').replace(/<\/?p>/gi, '').replace(/\s+/g, ' ').trim();
+
+        // Build CTA button HTML if CTA exists in store data
+        const ctaButton = storeData[idx].cta ?
+          `<a class="store-info-window-cta" href="${storeData[idx].cta.url}" target="_blank" rel="noopener noreferrer">${storeData[idx].cta.text}</a>` : '';
+
+        const infoWindow = new google.maps.InfoWindow({
+          content: `
+                      <div class="store-info-window">
+                          <div class="store-info-window-title">${store.title}</div>
+                          <div class="store-info-window-content">
+                              <div class="store-info-window-address">${formattedAddress}</div>
+                              <div class="store-info-window-actions">
+                                  ${ctaButton}
+                                  <a class="store-info-window-directions" href="${directionsUrl}" target="_blank" rel="noopener noreferrer">${texts.getDirections}</a>
+                              </div>
+                          </div>
+                      </div>
+                  `
+        });
+        infoWindows[idx] = infoWindow;
+
+        marker.addListener('click', () => {
+          infoWindows.forEach(iw => iw.close());
+          infoWindow.open(map, marker);
+
+          google.maps.event.addListenerOnce(infoWindow, 'domready', function () {
+            const iw = document.querySelector('.gm-style-iw');
+            const closeBtn = document.querySelector('.gm-ui-hover-effect');
+            if (iw && closeBtn) {
+              closeBtn.style.position = 'absolute';
+              closeBtn.style.top = '0px';
+              closeBtn.style.right = '0px';
+              closeBtn.style.zIndex = '2';
+            }
+          });
+        });
+      });
+    }
+
+    function geocodeAddress(address, callback) {
+      const geocoder = new google.maps.Geocoder();
+      geocoder.geocode({ address }, (results, status) => {
+        if (status === 'OK' && results[0]) {
+          callback(results[0].geometry.location);
+        } else {
+          callback(null);
+        }
+      });
+    }
+
+    function geocodeAllStores(stores, done) {
+      let remaining = stores.length;
+      if (remaining === 0) return done();
+
+      stores.forEach((store, idx) => {
+        geocodeAddress(store.address, (loc) => {
+          if (loc) {
+            store.lat = loc.lat();
+            store.lng = loc.lng();
+            remaining--;
+            if (remaining === 0) done();
+          } else {
+            const addressWithTitle = `${store.title}, ${store.address}`;
+            geocodeAddress(addressWithTitle, (loc2) => {
+              if (loc2) {
+                store.lat = loc2.lat();
+                store.lng = loc2.lng();
+              }
+              remaining--;
+              if (remaining === 0) done();
+            });
+          }
+        });
+      });
+    }
+
+    function findNearestStore(lat, lng) {
+      let minDist = Infinity, minIdx = -1;
+      stores.forEach((store, idx) => {
+        const d = distance(lat, lng, store.lat, store.lng);
+        if (d < minDist) {
+          minDist = d;
+          minIdx = idx;
+        }
+      });
+      return minDist <= 800 ? minIdx : -1;
+    }
+
+    function distance(lat1, lng1, lat2, lng2) {
+      function toRad(x) { return x * Math.PI / 180; }
+      const R = 6371;
+      const dLat = toRad(lat2 - lat1);
+      const dLng = toRad(lng2 - lng1);
+      const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+        Math.sin(dLng / 2) * Math.sin(dLng / 2);
+      return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    }
+
+    function showNoStoreMessage() {
+      document.querySelector('.no-store-message').style.display = 'block';
+    }
+
+    function hideNoStoreMessage() {
+      document.querySelector('.no-store-message').style.display = 'none';
+    }
+
+    const MAP_THEMES = {
+      standard: [],
+      silver: [{ "elementType": "geometry", "stylers": [{ "color": "#f5f5f5" }] }, { "elementType": "labels.icon", "stylers": [{ "visibility": "off" }] }, { "elementType": "labels.text.fill", "stylers": [{ "color": "#616161" }] }, { "elementType": "labels.text.stroke", "stylers": [{ "color": "#f5f5f5" }] }, { "featureType": "administrative.land_parcel", "elementType": "labels.text.fill", "stylers": [{ "color": "#bdbdbd" }] }, { "featureType": "poi", "elementType": "geometry", "stylers": [{ "color": "#eeeeee" }] }, { "featureType": "poi", "elementType": "labels.text.fill", "stylers": [{ "color": "#757575" }] }, { "featureType": "poi.park", "elementType": "geometry", "stylers": [{ "color": "#e5e5e5" }] }, { "featureType": "poi.park", "elementType": "labels.text.fill", "stylers": [{ "color": "#9e9e9e" }] }, { "featureType": "road", "elementType": "geometry", "stylers": [{ "color": "#ffffff" }] }, { "featureType": "road.arterial", "elementType": "labels.text.fill", "stylers": [{ "color": "#757575" }] }, { "featureType": "road.highway", "elementType": "geometry", "stylers": [{ "color": "#dadada" }] }, { "featureType": "road.highway", "elementType": "labels.text.fill", "stylers": [{ "color": "#616161" }] }, { "featureType": "road.local", "elementType": "labels.text.fill", "stylers": [{ "color": "#9e9e9e" }] }, { "featureType": "transit.line", "elementType": "geometry", "stylers": [{ "color": "#e5e5e5" }] }, { "featureType": "transit.station", "elementType": "geometry", "stylers": [{ "color": "#eeeeee" }] }, { "featureType": "water", "elementType": "geometry", "stylers": [{ "color": "#c9c9c9" }] }, { "featureType": "water", "elementType": "labels.text.fill", "stylers": [{ "color": "#9e9e9e" }] }],
+      retro: [{ "elementType": "geometry", "stylers": [{ "color": "#ebe3cd" }] }, { "elementType": "labels.text.fill", "stylers": [{ "color": "#523735" }] }, { "elementType": "labels.text.stroke", "stylers": [{ "color": "#f5f1e6" }] }, { "featureType": "administrative", "elementType": "geometry.stroke", "stylers": [{ "color": "#c9b2a6" }] }, { "featureType": "administrative.land_parcel", "elementType": "geometry.stroke", "stylers": [{ "color": "#dcd2be" }] }, { "featureType": "administrative.land_parcel", "elementType": "labels.text.fill", "stylers": [{ "color": "#ae9e90" }] }, { "featureType": "landscape.natural", "elementType": "geometry", "stylers": [{ "color": "#dfd2ae" }] }, { "featureType": "poi", "elementType": "geometry", "stylers": [{ "color": "#dfd2ae" }] }, { "featureType": "poi", "elementType": "labels.text.fill", "stylers": [{ "color": "#93817c" }] }, { "featureType": "poi.park", "elementType": "geometry.fill", "stylers": [{ "color": "#a5b076" }] }, { "featureType": "poi.park", "elementType": "labels.text.fill", "stylers": [{ "color": "#447530" }] }, { "featureType": "road", "elementType": "geometry", "stylers": [{ "color": "#f5f1e6" }] }, { "featureType": "road.arterial", "elementType": "geometry", "stylers": [{ "color": "#fdfcf8" }] }, { "featureType": "road.highway", "elementType": "geometry", "stylers": [{ "color": "#f8c967" }] }, { "featureType": "road.highway", "elementType": "geometry.stroke", "stylers": [{ "color": "#e9bc62" }] }, { "featureType": "road.highway.controlled_access", "elementType": "geometry", "stylers": [{ "color": "#e98d58" }] }, { "featureType": "road.highway.controlled_access", "elementType": "geometry.stroke", "stylers": [{ "color": "#db8555" }] }, { "featureType": "road.local", "elementType": "labels.text.fill", "stylers": [{ "color": "#806b63" }] }, { "featureType": "transit.line", "elementType": "geometry", "stylers": [{ "color": "#dfd2ae" }] }, { "featureType": "transit.line", "elementType": "labels.text.fill", "stylers": [{ "color": "#8f7d77" }] }, { "featureType": "transit.line", "elementType": "labels.text.stroke", "stylers": [{ "color": "#ebe3cd" }] }, { "featureType": "transit.station", "elementType": "geometry", "stylers": [{ "color": "#dfd2ae" }] }, { "featureType": "water", "elementType": "geometry.fill", "stylers": [{ "color": "#b9d3c2" }] }, { "featureType": "water", "elementType": "labels.text.fill", "stylers": [{ "color": "#92998d" }] }],
+      dark: [{ "elementType": "geometry", "stylers": [{ "color": "#212121" }] }, { "elementType": "labels.icon", "stylers": [{ "visibility": "off" }] }, { "elementType": "labels.text.fill", "stylers": [{ "color": "#757575" }] }, { "elementType": "labels.text.stroke", "stylers": [{ "color": "#212121" }] }, { "featureType": "administrative", "elementType": "geometry", "stylers": [{ "color": "#757575" }] }, { "featureType": "administrative.country", "elementType": "labels.text.fill", "stylers": [{ "color": "#9e9e9e" }] }, { "featureType": "administrative.land_parcel", "stylers": [{ "visibility": "off" }] }, { "featureType": "administrative.locality", "elementType": "labels.text.fill", "stylers": [{ "color": "#bdbdbd" }] }, { "featureType": "poi", "elementType": "labels.text.fill", "stylers": [{ "color": "#757575" }] }, { "featureType": "poi.park", "elementType": "geometry", "stylers": [{ "color": "#181818" }] }, { "featureType": "poi.park", "elementType": "labels.text.fill", "stylers": [{ "color": "#616161" }] }, { "featureType": "poi.park", "elementType": "labels.text.stroke", "stylers": [{ "color": "#1b1b1b" }] }, { "featureType": "road", "elementType": "geometry.fill", "stylers": [{ "color": "#2c2c2c" }] }, { "featureType": "road", "elementType": "labels.text.fill", "stylers": [{ "color": "#8a8a8a" }] }, { "featureType": "road.arterial", "elementType": "geometry", "stylers": [{ "color": "#373737" }] }, { "featureType": "road.highway", "elementType": "geometry", "stylers": [{ "color": "#3c3c3c" }] }, { "featureType": "road.highway.controlled_access", "elementType": "geometry", "stylers": [{ "color": "#4e4e4e" }] }, { "featureType": "road.local", "elementType": "labels.text.fill", "stylers": [{ "color": "#616161" }] }, { "featureType": "transit", "elementType": "labels.text.fill", "stylers": [{ "color": "#757575" }] }, { "featureType": "water", "elementType": "geometry", "stylers": [{ "color": "#000000" }] }, { "featureType": "water", "elementType": "labels.text.fill", "stylers": [{ "color": "#3d3d3d" }] }],
+      night: [{ "elementType": "geometry", "stylers": [{ "color": "#242f3e" }] }, { "elementType": "labels.text.fill", "stylers": [{ "color": "#746855" }] }, { "elementType": "labels.text.stroke", "stylers": [{ "color": "#242f3e" }] }, { "featureType": "administrative.locality", "elementType": "labels.text.fill", "stylers": [{ "color": "#d59563" }] }, { "featureType": "poi", "elementType": "labels.text.fill", "stylers": [{ "color": "#d59563" }] }, { "featureType": "poi.park", "elementType": "geometry", "stylers": [{ "color": "#263c3f" }] }, { "featureType": "poi.park", "elementType": "labels.text.fill", "stylers": [{ "color": "#6b9a76" }] }, { "featureType": "road", "elementType": "geometry", "stylers": [{ "color": "#38414e" }] }, { "featureType": "road", "elementType": "geometry.stroke", "stylers": [{ "color": "#212a37" }] }, { "featureType": "road", "elementType": "labels.text.fill", "stylers": [{ "color": "#9ca5b3" }] }, { "featureType": "road.highway", "elementType": "geometry", "stylers": [{ "color": "#746855" }] }, { "featureType": "road.highway", "elementType": "geometry.stroke", "stylers": [{ "color": "#1f2835" }] }, { "featureType": "road.highway", "elementType": "labels.text.fill", "stylers": [{ "color": "#f3d19c" }] }, { "featureType": "transit", "elementType": "geometry", "stylers": [{ "color": "#2f3948" }] }, { "featureType": "transit.station", "elementType": "labels.text.fill", "stylers": [{ "color": "#d59563" }] }, { "featureType": "water", "elementType": "geometry", "stylers": [{ "color": "#17263c" }] }, { "featureType": "water", "elementType": "labels.text.fill", "stylers": [{ "color": "#515c6d" }] }, { "featureType": "water", "elementType": "labels.text.stroke", "stylers": [{ "color": "#17263c" }] }],
+      aubergine: [{ "elementType": "geometry", "stylers": [{ "color": "#1d2c4d" }] }, { "elementType": "labels.text.fill", "stylers": [{ "color": "#8ec3b9" }] }, { "elementType": "labels.text.stroke", "stylers": [{ "color": "#1a3646" }] }, { "featureType": "administrative.country", "elementType": "geometry.stroke", "stylers": [{ "color": "#4b6878" }] }, { "featureType": "administrative.land_parcel", "elementType": "labels.text.fill", "stylers": [{ "color": "#64779e" }] }, { "featureType": "administrative.province", "elementType": "geometry.stroke", "stylers": [{ "color": "#4b6878" }] }, { "featureType": "landscape.man_made", "elementType": "geometry.stroke", "stylers": [{ "color": "#334e87" }] }, { "featureType": "landscape.natural", "elementType": "geometry", "stylers": [{ "color": "#023e58" }] }, { "featureType": "poi", "elementType": "geometry", "stylers": [{ "color": "#283d6a" }] }, { "featureType": "poi", "elementType": "labels.text.fill", "stylers": [{ "color": "#6f9ba5" }] }, { "featureType": "poi", "elementType": "labels.text.stroke", "stylers": [{ "color": "#1d2c4d" }] }, { "featureType": "poi.park", "elementType": "geometry.fill", "stylers": [{ "color": "#023e58" }] }, { "featureType": "poi.park", "elementType": "labels.text.fill", "stylers": [{ "color": "#3C7680" }] }, { "featureType": "road", "elementType": "geometry", "stylers": [{ "color": "#304a7d" }] }, { "featureType": "road", "elementType": "labels.text.fill", "stylers": [{ "color": "#98a5be" }] }, { "featureType": "road", "elementType": "labels.text.stroke", "stylers": [{ "color": "#1d2c4d" }] }, { "featureType": "road.highway", "elementType": "geometry", "stylers": [{ "color": "#2c6675" }] }, { "featureType": "road.highway", "elementType": "geometry.stroke", "stylers": [{ "color": "#255763" }] }, { "featureType": "road.highway", "elementType": "labels.text.fill", "stylers": [{ "color": "#b0d5ce" }] }, { "featureType": "road.highway", "elementType": "labels.text.stroke", "stylers": [{ "color": "#023e58" }] }, { "featureType": "transit", "elementType": "labels.text.fill", "stylers": [{ "color": "#98a5be" }] }, { "featureType": "transit", "elementType": "labels.text.stroke", "stylers": [{ "color": "#1d2c4d" }] }, { "featureType": "transit.line", "elementType": "geometry.fill", "stylers": [{ "color": "#283d6a" }] }, { "featureType": "transit.station", "elementType": "geometry", "stylers": [{ "color": "#3a4762" }] }, { "featureType": "water", "elementType": "geometry", "stylers": [{ "color": "#0e1626" }] }, { "featureType": "water", "elementType": "labels.text.fill", "stylers": [{ "color": "#4e6d70" }] }]
+    };
+
+  })();
+  </script>
+  <style>
+  .store-locator {
+    height: 100%;
+    --font-family: "Commissioner", sans-serif;
+    --border-color: #444;
+
+    & .store-info-window-cta {
+      --background: #F37021;
+      background: var(--background);
+      color: #ffffff;
+      padding: 4px 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-family);
+      font-size: 11px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: 150%;
+      text-transform: uppercase;
+      border-radius: 40px;
+      text-decoration: none;
+      white-space: nowrap;
+      margin-top: 8px;
+      transition: background 0.2s ease-in-out;
+
+      &:hover,
+      &:focus-visible {
+        background: color-mix(in srgb, var(--background) 90%, black 10%);
+      }
+    }
+
+    & ul {
+      list-style: none outside;
+      padding: 0;
+      margin: 0;
+
+      & li {
+          color: #000;
+          font-family: var(--font-family);
+          font-size: 11px;
+          font-style: normal;
+          font-weight: 400;
+          line-height: 150%;
+      }
+    }
+
+    & .store-locator-wrapper {
+      max-width: 1024px;
+      margin: 0 auto;
+      display: flex;
+      align-items: stretch;
+      height: 100%;
+      gap: 40px;
+      justify-content: space-between;
+
+      &::after {
+        display: none;
+      }
+    }
+
+    & .store-locator-sidebar {
+      width: 100%;
+      max-width: 382px;
+      display: flex;
+      flex-direction: column;
+      box-sizing: border-box;
+
+      & .store-locator-search-form {
+        display: flex;
+        margin: 0;
+
+        & .store-locator-input {
+          position: relative;
+          flex-grow: 1;
+
+          &::after {
+            content: "";
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            right: 22px;
+            pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='15' height='15' viewBox='0 0 15 15' fill='none'%3E%3Cpath d='M8.19574 8.42523L11.5213 11.7508M5.89069 9.38001C7.69105 9.38001 9.15052 7.92054 9.15052 6.12018C9.15052 4.31983 7.69105 2.86035 5.89069 2.86035C4.09034 2.86035 2.63086 4.31983 2.63086 6.12018C2.63086 7.92054 4.09034 9.38001 5.89069 9.38001Z' stroke='%23898989' stroke-width='1.18539' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat no-repeat;
+            background-position: center center;
+            background-size: cover;
+          }
+        }
+        & input[type="text"] {
+          min-height: 37px;
+          box-sizing: border-box;
+          padding: 8px 22px;
+          border: 1px solid var(--border-color);
+          background: #fff;
+          margin: 0;
+          width: 100%;
+          padding-right: 56px;
+          font-family: var(--font-family);
+          font-size: 12.447px;
+          font-style: normal;
+          font-weight: 400;
+          line-height: 150%;
+          letter-spacing: normal;
+          color: black;
+          border-radius: 0;
+
+          &::placeholder {
+            color: #898989;
+          }
+        }
+
+        & .find-a-store-btn {
+          --background: #000000;
+          border: 1px solid var(--background);
+          cursor: pointer;
+          background: var(--background);
+          color: #FFFFFF;
+          border-radius: 0;
+          min-height: 37px;
+          width: max-content;
+          margin: 0;
+          transition: background 0.2s ease-in-out, border 0.2s ease-in-out;
+          text-transform: uppercase;
+          min-width: 130px;
+          font-size: 11px;
+          font-family: var(--font-family);
+          font-style: normal;
+          font-weight: 600;
+          line-height: 150%;
+          letter-spacing: 0.333px;
+
+          &:hover,
+          &:focus-visible {
+            background: color-mix(in srgb, var(--background) 85%, white 15%);
+            border-color: color-mix(in srgb, var(--background) 85%, white 15%);
+          }
+        }
+      }
+
+      & .no-store-message {
+        color: #b94540;
+        font-family: var(--font-family);
+        font-size: 11px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 1.273;
+        letter-spacing: normal;
+        margin-top: 8px;
+      }
+
+      & .store-locator-store-list {
+        flex: 1;
+        box-sizing: border-box;
+        margin-top: 33px;
+        overflow-y: auto;
+
+        & .store-item {
+          border: 1px solid var(--border-color);
+          margin-bottom: 17px;
+          padding: 14px 14px 14px 16px;
+          cursor: pointer;
+
+          &:last-child {
+            margin-bottom: 0;
+          }
+
+          & .store-title {
+            font-family: var(--font-family);
+            font-size: 17px;
+            font-style: normal;
+            letter-spacing: normal;
+            margin-bottom: 4px;
+            color: #000;
+            font-weight: 600;
+            line-height: 150%;
+          }
+
+          & .store-address,
+          & .store-extra {
+            font-family: var(--font-family);
+            font-size: 14px;
+            font-style: normal;
+            letter-spacing: normal;
+            font-weight: 400;
+            color: #000;
+            line-height: 150%;
+
+            & p {
+              margin: 0;
+            }
+          }
+
+          & .work-time-today-label {
+            font-weight: 600;
+            color: #000;
+            margin-right: 8px;
+          }
+
+          & .expand-arrow {
+            position: absolute;
+            top: 50%;
+            right: 0;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+            margin-left: 0;
+            transition: transform 0.2s;
+          }
+
+          & .work-time-week {
+            display: none;
+            font-family: var(--font-family);
+            font-size: 11px;
+            font-style: normal;
+            line-height: 1.411;
+            letter-spacing: normal;
+            font-weight: 400;
+            margin-top: 8px;
+
+            & ul {
+              margin-bottom: 0;
+
+              & li:last-child {
+                margin-bottom: 0;
+              }
+            }
+          }
+
+          & .work-time-today {
+            width: 100%;
+            font-family: var(--font-family);
+            font-size: 11px;
+            font-style: normal;
+            line-height: 1.411;
+            letter-spacing: normal;
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 20px;
+            position: relative;
+            padding-right: 22px;
+            transform: translateY(4px);
+            padding: 0;
+            padding-right: 20px;
+            margin-top: 30px;
+            background: none;
+            border: none;
+            cursor: pointer;
+
+            &[aria-expanded="true"] .expand-arrow {
+              transform: translateY(-50%) rotate(180deg);
+            }
+
+            &[aria-expanded="true"] + .work-time-week {
+              display: block;
+            }
+          }
+        }
+      }
+    }
+
+    & #map {
+      flex: 1;
+      width: auto;
+      aspect-ratio: 552/502;
+      position: relative;
+      display: block;
+      align-self: stretch;
+
+      & .pac-container:after {
+        content: none !important;
+      }
+
+      & .gm-style-iw-d,
+      .gm-style-iw {
+        max-height: unset !important;
+      }
+
+      & .store-info-window-content {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        width: 100%;
+      }
+
+      & .store-info-window-title {
+        font-size: 12px;
+        font-family: "Area Normal", sans-serif;
+        font-weight: 800;
+        font-style: normal;
+        line-height: 1.208;
+        letter-spacing: normal;
+        color: black;
+        padding-right: 36px;
+        min-height: 36px;
+        padding-bottom: 8px;
+        box-sizing: border-box;
+      }
+
+      & .store-info-window-actions {
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+
+        & > :only-child {
+          margin-left: auto;
+        }
+      }
+
+      & .store-info-window-address {
+        color: black;
+        font-family: var(--font-family);
+        font-size: 11px;
+        font-style: normal;
+        line-height: 1.411;
+        letter-spacing: normal;
+        padding-right: 8px;
+        max-width: 200px;
+      }
+
+      & .store-info-window-directions {
+        --color: #0F75BC;
+        align-self: flex-end;
+        white-space: nowrap;
+        color: var(--color);
+        text-decoration: underline;
+        font-family: var(--font-family);
+        font-size: 11px;
+        font-style: normal;
+        line-height: 1.411;
+        letter-spacing: normal;
+        transition: color 0.2s ease-in-out;
+      }
+
+      & .store-info-window-directions:hover,
+      & .store-info-window-directions:active {
+        color: color-mix(in srgb, var(--color) 50%, black 50%);
+      }
+    }
+  }
+
+  @media (max-width: 960px) {
+    .store-locator {
+      & .store-locator-wrapper {
+        gap: 20px;
+      }
+
+      & .store-locator-sidebar {
+          max-width: 350px;
+      }
+    }
+  }
+
+
+  @media (max-width: 800px) {
+    .store-locator {
+      & .store-locator-wrapper {
+        height: 100%;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 40px;
+      }
+
+      & #map {
+        height: 400px;
+        min-height: 400px;
+        max-height: 400px;
+        width: 100%;
+        aspect-ratio: unset;
+      }
+
+      & .store-locator-sidebar {
+        flex: 1;
+        height: auto;
+        min-height: 0;
+        max-height: none;
+        & .store-locator-search-form {
+          flex-direction: column;
+
+          & .find-a-store-btn {
+            width: 100%;
+            margin-top: 16px;
+          }
+        }
+      }
+    }
+  }
+  </style>
+
+</section>
